@@ -44,6 +44,7 @@ yywrap()
 %token	WRITE DELETE ATTRIB RENAME
 %type	<str> QSTRING
 %type	<mask> WRITE DELETE ATTRIB RENAME
+%type	<mask> opspec
 
 %%
 
@@ -100,29 +101,27 @@ path_block:
 	| path_block path_params
 	;
 
+opspec:
+	WRITE
+	{
+		$$ = NOTE_WRITE;
+	}
+	| DELETE
+	{
+		$$ = NOTE_DELETE;
+	}
+	| RENAME
+	{
+		$$ = NOTE_RENAME;
+	}
+	| ATTRIB
+	{
+		$$ = NOTE_ATTRIB;
+	}
+	;
+
 path_params:
-	OP WRITE SEMICOLON
-	{
-		struct kevent *kep;
-
-		kep = &kev[nkev];
-		kep->fflags |= $2;
-	}
-	| OP DELETE SEMICOLON
-	{
-		struct kevent *kep;
-
-		kep = &kev[nkev];
-		kep->fflags |= $2;
-	}
-	| OP RENAME SEMICOLON
-	{
-		struct kevent *kep;
-
-		kep = &kev[nkev];
-		kep->fflags |= $2;
-	}
-	| OP ATTRIB SEMICOLON
+	OP opspec SEMICOLON
 	{
 		struct kevent *kep;
 
