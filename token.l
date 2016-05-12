@@ -38,6 +38,8 @@ int lineno = 1;
 tokenchar	[^[:blank:];,<>"\n]
 tokenstring	{tokenchar}+
 
+%option nounput
+
 %%
 \n              lineno++;
 [ \t]+          /* ignore whitespace */
